@@ -94,13 +94,13 @@ public class POSModel {
 		morder.setIsSOTrx(true);
 		morder.setC_DocTypeTarget_ID(C_DoctypeTar_ID);
 		morder.setPaymentRule(paymentRule);
-		
 		morder.setM_PriceList_ID(M_PriceList_ID);
 		morder.save(trx.getTrxName());
 		trx.commit();
 		
 		//this two lines were added due to not create correct price list, this is incorrect, should be corrected
 		morder.setM_PriceList_ID(M_PriceList_ID);
+		morder.setSalesRep_ID(Env.getAD_User_ID(ctx));
 		morder.save(trx.getTrxName());
 		
 		trx.commit();
