@@ -75,6 +75,7 @@ public class QueryOrders {
 		+ " AND o.DOCSTATUS = ? "
 		+ " AND	o.SALESREP_ID = ? "
 		+ " AND o.AD_Org_ID = ? "
+		+ " AND o.IsSotrx = 'Y' "
 		+ " GROUP BY o.C_Order_ID, o.Documentno ,bp.NAME,	dt.NAME, pl.NAME,"
 		+ " o.GRANDTOTAL order by o.C_Order_ID desc");
 		
