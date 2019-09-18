@@ -179,7 +179,7 @@ public class ProductInfor extends JDialog implements ActionListener{
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        tbInfo.setAutoCreateRowSorter(true);
+        //tbInfo.setAutoCreateRowSorter(true);
         tbInfo.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         //tbInfo.setForeground(new java.awt.Color(0, 0, 0));
         tbInfo.setModel(new javax.swing.table.DefaultTableModel(
