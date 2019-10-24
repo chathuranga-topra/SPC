@@ -683,8 +683,11 @@ public class POSPanel implements FormPanel , ActionListener{
 			}
 			
 		}else if(e.getSource().equals(btnQueryProduct)){
+			
+			
 			//change business partner
-			if(this.getPosModel().getMorder()!=null && this.getPosModel().getMorder().getC_DocTypeTarget_ID() != this.getPosModel().getPosConf().getC_DocTypeReturn_ID())
+			if(this.getPosModel().getMorder()!=null 
+					&& this.getPosModel().getMorder().getC_DocTypeTarget_ID() != this.getPosModel().getPosConf().getC_DocTypeReturn_ID())
 				 new ProductInfor(this , MOrder.Table_ID);
 			//else
 				//new POSError(this.frame , "STOP" , "Undifined operation!");	
@@ -726,6 +729,11 @@ public class POSPanel implements FormPanel , ActionListener{
 			}
 		}else if(e.getSource().equals(btnOrderType)){
 			
+			if(!posModel.getMorder().getDocStatus().equals("DR") || posModel.getMorder().isPrinted()){//validate for order status
+				new POSError(this.getFrame(), "Processed Order!", "You are not allowed to make changes!");
+				return;
+			}
+			
 			if(posModel.getMorder() != null && posModel.getMorder().getDocStatus().equals("DR")){
 				
 				new OrderType(this);
@@ -761,7 +769,7 @@ public class POSPanel implements FormPanel , ActionListener{
 		
 		MOrder order = new MOrder(getCtx(), morder.get_ID(), morder.get_TrxName());
 		
-		txtDocNo.setText(order.getDocumentNo() + " : " + order.getDocStatus());
+		txtDocNo.setText(order.getDocumentNo() + " : " + (order.isPrinted() ?"IP":"DR"));
 		btnCustomer.setText(order.getC_BPartner().getC_BP_Group().getName());
 		txtTotal.setText(order.getGrandTotal().setScale(2, RoundingMode.CEILING)+"");
 		txtItemCount.setText(order.getLines().length+"");//item count
@@ -865,8 +873,12 @@ public class POSPanel implements FormPanel , ActionListener{
 	private void tblLines1MouseClicked(MouseEvent evt) {
 		
 		//number pad visualize only for draft bill
-		if(! this.getPosModel().getMorder().getDocStatus().equals("DR"))
+		if(!this.getPosModel().getMorder().getDocStatus().equals("DR") || posModel.getMorder().isPrinted())
+		{
+			
+			new POSError(this.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
+		}
 		int column = tblLines.getSelectedColumn();
 		if(column == 6)//number pad visible only for quantity column clicked
 			new NumberPad(this);

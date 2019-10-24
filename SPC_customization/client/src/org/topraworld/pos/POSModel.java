@@ -26,6 +26,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.topraworld.model.MCPOSConfigiration;
 import org.topraworld.model.MCPhamacyReturn;
+import org.topraworld.model.X_C_PhamacyReturn;
 
 public class POSModel {
 	
@@ -111,10 +112,10 @@ public class POSModel {
 	
 	protected void createLine(int M_Product_ID , BigDecimal qty){
 		
-		if(!getOrderDocStatus().equals("DR")){//validate for order status
+		if(!getOrderDocStatus().equals("DR") || morder.isPrinted()){//validate for order status
 			new POSError(this.panel.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
-		}	
+		}
 		
 		String whereClause = "AND M_Product_ID = " + M_Product_ID;
 		int length = morder.getLines(whereClause, "M_Product_ID DESC").length;
@@ -152,7 +153,7 @@ public class POSModel {
 	protected void changeBPartner(){
 		
 		
-		if(this.morder != null && !this.morder.getDocStatus().equals("DR")){
+		if(this.morder != null && !this.morder.getDocStatus().equals("DR") || morder.isPrinted()){
 			new POSError(this.panel.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
 		}
@@ -210,7 +211,7 @@ public class POSModel {
 	protected void plusQty(int C_OrderLine_ID){
 		
 		//if(!(getOrderDocStatus().equals("DR") || getOrderDocStatus().equals("IP"))){//validate for order status
-		if(!getOrderDocStatus().equals("DR")){//validate for order status
+		if(!getOrderDocStatus().equals("DR") || morder.isPrinted()){//validate for order status
 			new POSError(this.panel.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
 		}
@@ -252,7 +253,7 @@ public class POSModel {
 	protected void minusQty(int C_OrderLine_ID){
 		
 		//if(!(getOrderDocStatus().equals("DR") || getOrderDocStatus().equals("IP"))){//validate for order status
-		if(!getOrderDocStatus().equals("DR")){//validate for order status
+		if(!getOrderDocStatus().equals("DR") || morder.isPrinted()){//validate for order status
 			new POSError(this.panel.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
 		}
@@ -298,7 +299,7 @@ public class POSModel {
 	
 	protected void removeLines(@SuppressWarnings("rawtypes") ArrayList ids){
 		
-		if(!getOrderDocStatus().equals("DR")){//validate for order status
+		if(!getOrderDocStatus().equals("DR") || morder.isPrinted()){//validate for order status
 			new POSError(this.panel.getFrame(), "Processed Order!", "You are not allowed to make changes!");
 			return;
 		}
@@ -317,7 +318,7 @@ public class POSModel {
 				removeLine((int)id);
 			}
 			
-		}else{//delete selling orddr
+		}else{//delete selling order
 			for(Object id : ids){
 				removeLine((int)id);
 			}
@@ -342,7 +343,7 @@ public class POSModel {
 			
 			if(isPrinted){
 				morder.setIsPrinted(isPrinted);
-				morder.processIt("PR");
+				//morder.processIt("PR");
 				morder.save();
 				trx.commit();
 				
@@ -521,13 +522,21 @@ public class POSModel {
 				reOrder.save(trx.getTrxName());
 				
 				MOrderLine [] lines = order.getLines();
+				X_C_PhamacyReturn x = null;
+				MOrder ro = null;
 				
 				for(MOrderLine line : lines){
 					
 					//validate for already return line
 					int i = MCPhamacyReturn.getBaseLine(reOrder, order.get_ID(), line.get_ID());
 					
-					if(i != -1) continue;
+					if(i != -1){
+						x = new X_C_PhamacyReturn(ctx, i, trx.getTrxName());
+						ro =  new MOrder(ctx, x.getReturnOrderID(), trx.getTrxName());
+						if(!ro.getDocStatus().equalsIgnoreCase("VO")){
+							continue;
+						}
+					}
 					
 					MOrderLine rol = new MOrderLine(reOrder);
 					MOrderLine.copyValues(line, rol);

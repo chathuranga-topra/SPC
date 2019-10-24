@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class QueryProduct {
 	
-	protected void queryProduct(ProductInfor productInfor) {
+	protected void queryProduct(ProductInfor productInfor , int M_Warehouse_ID) {
 		
 		String query = productInfor.getSearchKey().getText();
 		if (query == null || query.length() == 0 || query.length() == 1)
@@ -35,7 +35,7 @@ public class QueryProduct {
 		
 		results = MWarehousePrice.find (productInfor.getPosPanel().getCtx(),
 				productInfor.getPosPanel().getPosModel().getPosConf().getM_PriceListCash_ID(), 
-				productInfor.getPosPanel().getPosModel().getPosConf().getM_Warehouse_ID(),
+				M_Warehouse_ID,
 				Value, Name, UPC, SKU, null);
 		
 		DefaultTableModel model = (DefaultTableModel) productInfor.getTbInfo().getModel();
@@ -49,7 +49,7 @@ public class QueryProduct {
 			}
 			
 			BigDecimal notReserved = MOrderLine.getNotReserved(productInfor.getPosPanel().getCtx(), 
-					productInfor.getPosPanel().getPosModel().getPosConf().getM_Warehouse_ID(),
+					M_Warehouse_ID,
 					r.getM_Product_ID(), 0, 0);
 			
 			notReserved = notReserved == null ?new BigDecimal("0"):notReserved;

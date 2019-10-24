@@ -15,7 +15,7 @@ import org.compiere.util.Env;
 public class QueryOrders {
 	
 	private StringBuffer sb; 
-	private String DOCSTATUS;
+	private String where;
 	private int SALESREP_ID;
 	private int AD_Org_ID;
 	private String trxName;
@@ -31,25 +31,25 @@ public class QueryOrders {
 	
 	protected void getDrafBill(){
 		
-		this.DOCSTATUS = "DR";
+		this.where = "IsPrinted='N' AND DocStatus='DR'";
 		this.getData();
 	}
 	
 	protected void getIPBill(){
 		
-		this.DOCSTATUS = "IP";
+		this.where = "IsPrinted='Y' AND DocStatus = 'DR'";
 		this.getData();
 	}
 	
 	protected void getCompleteBill(){
 		
-		this.DOCSTATUS = "CO";
+		this.where = "DocStatus='CO'";
 		this.getData();
 	}
 	
 	protected void getVoidBill(){
 		
-		this.DOCSTATUS = "VO";
+		this.where = "DocStatus='VO'";
 		this.getData();
 	}
 	
@@ -72,7 +72,7 @@ public class QueryOrders {
 		+ " AND pl.M_PRICELIST_ID = o.M_PRICELIST_ID "
 		+ " AND bp.C_BPARTNER_ID = o.C_BPARTNER_ID "
 		+ " AND o.DATEORDERED = TO_CHAR(SYSDATE, 'dd-MON-yyyy') "
-		+ " AND o.DOCSTATUS = ? "
+		+ " AND " + where
 		+ " AND	o.SALESREP_ID = ? "
 		+ " AND o.AD_Org_ID = ? "
 		+ " AND o.IsSotrx = 'Y' "
@@ -85,9 +85,9 @@ public class QueryOrders {
 		try{
 			
 			ps = DB.prepareStatement(sb.toString(), trxName);
-			ps.setString(1, DOCSTATUS);
-			ps.setInt(2, SALESREP_ID);
-			ps.setInt(3, AD_Org_ID);
+			
+			ps.setInt(1, SALESREP_ID);
+			ps.setInt(2, AD_Org_ID);
 			rs = ps.executeQuery();
 			
 			DefaultTableModel model = (DefaultTableModel) infoTbl.getModel();

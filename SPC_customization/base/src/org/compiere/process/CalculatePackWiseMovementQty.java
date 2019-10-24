@@ -14,39 +14,34 @@ import org.compiere.util.Env;
 
 //Topra customization
 //Chathuranga - 2016/06/4
-//Create a database colum name as packqty and type as numaric
+//Create a database colum name as pack qty and type as numaric
 //Inventory move window
 
 //org.compiere.process.CalculatePackWiseMovementQty.getMovementQty
 public class CalculatePackWiseMovementQty extends CalloutEngine{
 	
-	public String getMovementQty (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
-	{
-		try{
-			int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, "M_Product_ID");
-			if(M_Product_ID!=0){
-				
-				BigDecimal packqty = (BigDecimal) mTab.getValue("packqty");
-				BigDecimal movementqty;
-				if(packqty.compareTo(new BigDecimal(0))!=0){
-					String sql = "select dividerate from c_uom_conversion where m_product_id = " +M_Product_ID;
-					int i = DB.getSQLValue (mTab.getTrxInfo(), sql);
+	public void getMovementQty (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{	
+		
+		int M_Product_ID = Integer.parseInt(mTab.get_ValueAsString("M_Product_ID"));
+		
+		BigDecimal packqty = (BigDecimal) mTab.getValue("packqty");
+		BigDecimal movementqty;
+		if(packqty.compareTo(new BigDecimal(0))!=0){
+			String sql = "select dividerate from c_uom_conversion where m_product_id = " +M_Product_ID;
+			int i = DB.getSQLValue (mTab.getTrxInfo(), sql);
 
-					//if unit of messure is not available
-					if(i>0){
-						movementqty = packqty.multiply(new BigDecimal(i));
-					}
-					else{
-						movementqty = packqty;
-					}
-					mTab.setValue("movementqty" ,movementqty);
-				}
+			//if unit of messure is not available
+			if(i>0){
+				movementqty = packqty.multiply(new BigDecimal(i));
 			}
+			else{
+				movementqty = packqty;
+			}
+			mTab.setValue("movementqty" ,movementqty);
 		}
-		catch(Exception ex){
-			ex.printStackTrace();
-		}
-		return "";
+		
+		
 	}
 	
 	//org.compiere.process.CalculatePackWiseMovementQty.Tranfer

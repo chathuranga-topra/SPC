@@ -1,10 +1,7 @@
 package org.topra.modelValidator;
 
-import java.math.BigDecimal;
-
 import org.compiere.model.MClient;
 import org.compiere.model.MMovement;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -19,8 +16,10 @@ public class Validator  implements ModelValidator{
 		if (client != null)
 			m_AD_Client_ID = client.getAD_Client_ID();
 		
-		engine.addModelChange(MOrderLine.Table_Name, this);
+		//engine.addModelChange(MOrderLine.Table_Name, this);
 		engine.addDocValidate(MMovement.Table_Name, this);
+		
+		
 	}
 
 	@Override
@@ -30,7 +29,7 @@ public class Validator  implements ModelValidator{
 	@Override
 	public String modelChange(PO po, int type) throws Exception {
 		
-		if(po.get_TableName().equals(MOrderLine.Table_Name)){//whole sale discount setting
+		/*if(po.get_TableName().equals(MOrderLine.Table_Name)){//whole sale discount setting
 		
 			WholeSaleDiscount wsDiscount = new WholeSaleDiscount((MOrderLine) po);
 			
@@ -44,7 +43,7 @@ public class Validator  implements ModelValidator{
 				if(ov.compareTo(ol.getQtyEntered())!=0)
 					wsDiscount.setDiscount();
 			}
-		}
+		}*/
 		return null;
 	}
 

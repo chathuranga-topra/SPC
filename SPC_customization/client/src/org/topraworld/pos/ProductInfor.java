@@ -183,6 +183,7 @@ public class ProductInfor extends JDialog implements ActionListener{
         tbInfo.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         //tbInfo.setForeground(new java.awt.Color(0, 0, 0));
         tbInfo.setModel(new javax.swing.table.DefaultTableModel(
+        		
             new Object [][] { },
             new String [] { "M_Product_ID", "Code", "Name","Availabe Qty", "Generic", "Pack Size",  "Price" }
         ){
@@ -897,7 +898,11 @@ public class ProductInfor extends JDialog implements ActionListener{
 			public void changedUpdate(DocumentEvent arg0) { }
 			@Override
 			public void insertUpdate(DocumentEvent arg0) {
-				qp.queryProduct(ProductInfor.this);
+				
+				if(TableID == MMovement.Table_ID)
+					qp.queryProduct(ProductInfor.this ,ProductInfor.this.posPanel.getPosModel().getPosConf().getM_WarehouseSource_ID());
+				else
+					qp.queryProduct(ProductInfor.this ,ProductInfor.this.posPanel.getPosModel().getPosConf().getM_Warehouse_ID());
 			}
 			@Override
 			public void removeUpdate(DocumentEvent arg0) { }
