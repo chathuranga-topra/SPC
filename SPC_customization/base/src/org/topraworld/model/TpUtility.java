@@ -1,13 +1,39 @@
 package org.topraworld.model;
 
+import org.compiere.util.Env;
+
 public class TpUtility {
 	
+	
 	//POS Business Partners Groups
-	private int PregnantC_BpGroup_ID=1000006;
-	private int SeniorC_BPGroup_ID=1000007;
-	private int ChildC_BPGroup_ID=1000008;
-	private int GeneralC_BPGroup_ID=1000005;
-	private int SpCusC_BPGroup_ID=1000009;
+	private int PregnantC_BpGroup_ID;
+	private int SeniorC_BPGroup_ID;
+	private int ChildC_BPGroup_ID;
+	private int GeneralC_BPGroup_ID;
+	private int SpCusC_BPGroup_ID;
+	
+	public TpUtility(){
+		
+		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
+		
+		if(AD_Org_ID == 1000000){  //Avissawella
+			PregnantC_BpGroup_ID=1000008;
+			SeniorC_BPGroup_ID=1000010;
+			ChildC_BPGroup_ID=1000009;
+			GeneralC_BPGroup_ID=1000005;
+			SpCusC_BPGroup_ID=1000007;
+		}else{
+			
+			PregnantC_BpGroup_ID=1000006;
+			SeniorC_BPGroup_ID=1000007;
+			ChildC_BPGroup_ID=1000008;
+			GeneralC_BPGroup_ID=1000005;
+			SpCusC_BPGroup_ID=1000009;
+			
+		}
+	}
+	
+	
 	
 	public int getPregnantC_BpGroup_ID() {
 		return PregnantC_BpGroup_ID;
